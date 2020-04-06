@@ -4,6 +4,7 @@
 import mysql.connector
 from common.dbUtils import *
 from common.apiserver import *
+import time
 
 
 '''
@@ -476,5 +477,8 @@ Main
 if __name__ == "__main__":
     host = str(os.getenv('ADMIN_SRV_ADDR'))
     port = int(os.getenv('ADMIN_SRV_PORT'))
+    # Wait 15 seconds before trying to connect
+    time.sleep(15)
+    print("Connecting to DB")
     initDb()
     AdminServer(host, port).serve_forever()
