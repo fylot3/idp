@@ -1,0 +1,57 @@
+version: '3.3'
+
+services:
+
+  adminsrv:
+    build:
+      context: ./admin_service
+    image: admin_service
+    depends_on:
+      - mysql
+    command: ["./common/wait-for-it.sh", "10.5.0.5:3306", "--", "python", "main.py"]
+    restart: always
+    environment:
+      DB_HOST: '10.5.0.5'
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_NAME: contabilitate
+      ADMIN_SRV_ADDR: '10.5.0.6'
+      ADMIN_SRV_PORT: '8050'
+    ports:
+      - 8050:8050
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.6
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - db_data:/tmp/mysql/data
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: bobo
+      MYSQL_PASSWORD: password
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.5
+
+  admin:    
+    image: adminer    
+    ports:      
+      - "8080:8080"
+    networks:
+      vpcbr:
+        ipv4_address: 10.5.0.8
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+
+volumes:
+    db_data: {}
+    client_data: {}
