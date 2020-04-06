@@ -6,7 +6,6 @@ services:
     image: fylot3b/cheers2019:latest
     depends_on:
       - mysql
-    # command: ["./common/wait-for-it.sh", "10.5.0.5:3306", "--", "python", "main.py"]
     restart: always
     environment:
       DB_HOST: '10.5.0.5'
@@ -20,6 +19,8 @@ services:
     networks:
       vpcbr:
         ipv4_address: 10.5.0.6
+    links:
+      - mysql
 
   mysql:
     image: mysql
